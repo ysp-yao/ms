@@ -1,0 +1,591 @@
+/*
+const ROOM_OPTIONS =
+{
+	requestTimeout   : 10000,
+	transportOptions :
+	{
+		tcp : false
+	}
+};
+
+settings =
+{
+  roomSettings       : options.roomSettings,
+  requestTimeout     : options.requestTimeout || 10000,
+  transportOptions   : options.transportOptions || {},
+  turnServers        : options.turnServers || [],
+  iceTransportPolicy : options.iceTransportPolicy || 'all'
+};
+*/
+
+// 第一个人
+ToServer:
+{
+  "request":true,
+  "id":0,
+  "method":"mediasoup-request",
+  "data":{
+    "method":"queryRoom",
+    "target":"room"
+  }
+}
+
+ToClient:
+{
+  "response":true,
+  "id":0,
+  "ok":true,
+  "data":{ // roomSettings
+    "rtpCapabilities":{
+      "codecs":[
+        {"kind":"audio","name":"opus","mimeType":"audio/opus","clockRate":48000,"channels":2,"parameters":{"useinbandfec":1},"rtcpFeedback":[],"preferredPayloadType":100},
+        {"kind":"video","name":"VP8","mimeType":"video/VP8","clockRate":90000,"rtcpFeedback":[{"type":"nack"},{"type":"nack","parameter":"pli"},{"type":"nack","parameter":"sli"},{"type":"nack","parameter":"rpsi"},{"type":"nack","parameter":"app"},{"type":"ccm","parameter":"fir"},{"type":"ack","parameter":"rpsi"},{"type":"ack","parameter":"app"},{"type":"goog-remb"}],"parameters":{},"preferredPayloadType":101},
+        {"kind":"video","name":"rtx","mimeType":"video/rtx","preferredPayloadType":102,"clockRate":90000,"parameters":{"apt":101}}
+      ],
+      "headerExtensions":[
+        {"kind":"audio","uri":"urn:ietf:params:rtp-hdrext:ssrc-audio-level","preferredId":1,"preferredEncrypt":false},
+        {"kind":"video","uri":"urn:ietf:params:rtp-hdrext:toffset","preferredId":2,"preferredEncrypt":false},
+        {"kind":"audio","uri":"http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time","preferredId":3,"preferredEncrypt":false},
+        {"kind":"video","uri":"http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time","preferredId":3,"preferredEncrypt":false},
+        {"kind":"video","uri":"urn:3gpp:video-orientation","preferredId":4,"preferredEncrypt":false},
+        {"kind":"video","uri":"urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id","preferredId":5,"preferredEncrypt":false}
+      ],
+      "fecMechanisms":[]
+    },
+    "mandatoryCodecPayloadTypes":[      
+    ]
+  }
+}
+
+/*
+roomSettings
+
+const pc = new RTCPeerConnection(
+{
+  iceServers         : [],
+  iceTransportPolicy : 'all',
+  bundlePolicy       : 'max-bundle',
+  rtcpMuxPolicy      : 'require'
+});
+
+return pc.createOffer(
+{
+  offerToReceiveAudio : true,
+  offerToReceiveVideo : true
+})
+.then((offer) =>
+{
+  pc.close();  // NOTICE: 这里关闭了这个临时的pc
+
+  const sdpObj = sdpTransform.parse(offer.sdp);
+  const nativeRtpCapabilities = sdpCommonUtils.extractRtpCapabilities(sdpObj);
+
+  return nativeRtpCapabilities;
+})
+
+extendedRtpCapabilities = ortc.getExtendedRtpCapabilities(nativeRtpCapabilities, roomSettings.rtpCapabilities);
+
+const unsupportedRoomCodecs = ortc.getUnsupportedCodecs(roomSettings.rtpCapabilities, roomSettings.mandatoryCodecPayloadTypes, extendedRtpCapabilities);
+
+const effectiveLocalRtpCapabilities = ortc.getRtpCapabilities(extendedRtpCapabilities);
+*/
+
+
+ToServer:{
+  "request":true,
+  "id":1,
+  "method":"mediasoup-request",
+  "data":{
+    "method":"join",
+    "target":"room",
+    "peerName":"TestPeer",
+    "rtpCapabilities":{
+      "codecs":[
+        {"name":"opus","mimeType":"audio/opus","kind":"audio","clockRate":48000,"preferredPayloadType":100,"channels":2,"rtcpFeedback":[],"parameters":{"useinbandfec":1}},
+        {"name":"VP8","mimeType":"video/VP8","kind":"video","clockRate":90000,"preferredPayloadType":101,"rtcpFeedback":[{"type":"ccm","parameter":"fir"},{"type":"nack"},{"type":"nack","parameter":"pli"},{"type":"goog-remb"}],"parameters":{}},
+        {"name":"rtx","mimeType":"video/rtx","kind":"video","clockRate":90000,"preferredPayloadType":102,"parameters":{"apt":101}}
+      ],
+      "headerExtensions":[
+        {"kind":"audio","uri":"urn:ietf:params:rtp-hdrext:ssrc-audio-level","preferredId":1},
+        {"kind":"video","uri":"urn:ietf:params:rtp-hdrext:toffset","preferredId":2},
+        {"kind":"video","uri":"http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time","preferredId":3},
+        {"kind":"video","uri":"urn:3gpp:video-orientation","preferredId":4}
+      ],
+      "fecMechanisms":[]
+    },
+    "appData":{
+      "displayName":"fuckyou",
+      "device":{
+        "flag":"mediasoup-client-cpp",
+        "name":"mediasoup-client-cpp",
+        "version":"1.0"
+      }
+    }
+  }
+}
+
+
+ToClient:{
+  "response":true,
+  "id":1,
+  "ok":true,
+  "data":{
+    "peers":[]
+  }
+}
+
+
+/*
+
+// transport对应peerconnection
+const transport = new Transport(direction, extendedRtpCapabilities, settings, appData);
+{
+  handler = new Device.Handler(direction, extendedRtpCapabilities, settings);
+
+  this._pc = new RTCPeerConnection(
+    {
+      iceServers         : settings.turnServers || [],
+      iceTransportPolicy : settings.iceTransportPolicy,
+      bundlePolicy       : 'max-bundle',
+      rtcpMuxPolicy      : 'require'
+    });
+
+  this._remoteSdp = new RemotePlanBSdp(direction, rtpParametersByKind);
+}
+
+stream = navigator.mediaDevices.getUserMedia({audio : false, video : true});
+const audioTrack = stream.getAudioTracks()[0];
+const videoTrack = stream.getVideoTracks()[0];
+
+// producer对应track
+const videoProducer = room.createProducer(videoTrack, { simulcast: true }, { source: 'webcam' });
+{
+  const producer = new Producer(track, options, appData);
+
+}
+videoProducer.send(sendTransport)
+{
+  this._stream.addTrack(track);
+
+  // Add the stream to the PeerConnection.
+  this._pc.addStream(this._stream);
+
+  offer =  this._pc.createOffer();
+
+  const sdpObject = sdpTransform.parse(offer.sdp);
+
+  sdpPlanBUtils.addSimulcastForTrack(sdpObject, track);
+
+  const offerSdp = sdpTransform.write(sdpObject);
+
+  offer = { type: 'offer', sdp: offerSdp };
+
+  this._pc.setLocalDescription(offer);
+
+  // Get our local DTLS parameters.
+  const transportLocalParameters = {};
+  const sdp = this._pc.localDescription.sdp;
+  const sdpObj = sdpTransform.parse(sdp);
+  const dtlsParameters = sdpCommonUtils.extractDtlsParameters(sdpObj);
+
+  // Let's decide that we'll be DTLS server (because we can).
+  dtlsParameters.role = 'server';
+
+  transportLocalParameters.dtlsParameters = dtlsParameters;
+
+  // Provide the remote SDP handler with transport local parameters.
+  this._remoteSdp.setTransportLocalParameters(transportLocalParameters);
+
+  const data =
+  {
+    id        : this._id,
+    direction : this._direction,
+    options   : this._settings.transportOptions,
+    appData   : this._appData
+  };
+
+  if (transportLocalParameters)
+    data.dtlsParameters = transportLocalParameters.dtlsParameters;
+
+
+}
+
+
+
+*/
+
+
+
+
+ToServer:{
+  "request":true,
+  "id":2,
+  "method":"mediasoup-request",
+  "data":{
+    "method":"createTransport",
+    "target":"peer",
+    "id":69211310,
+    "direction":"send",
+    "options":{"tcp":false},
+    "appData":{"media":"SEND_MIC_WEBCAM"},
+    "dtlsParameters":{
+      "role":"server",
+      "fingerprints":[
+        {"algorithm":"sha-256","value":"1B:48:6D:F0:1E:90:EE:6F:1E:3B:48:E1:D7:FA:18:0D:A9:CE:2D:D9:23:67:D2:E4:2B:25:31:64:06:15:5A:62"}
+      ]
+    }
+  }
+}
+
+ToClient:{
+  "response":true,
+  "id":2,
+  "ok":true,
+  "data":{
+    "iceParameters":{
+      "iceLite":true,
+      "password":"uxce7tvhop6z26il3ulf8e8ityz0f33e",
+      "usernameFragment":"psr1momcr4d2t5p8"
+    },
+    "iceCandidates":[
+      {"family":"ipv4","foundation":"udpcandidate","ip":"192.168.1.118","port":46477,"priority":1078862079,"protocol":"udp","type":"host"}
+    ],
+    "dtlsParameters":{
+      "fingerprints":[
+        {"algorithm":"sha-1","value":"16:B4:52:DB:8C:59:CC:78:52:74:28:7E:98:91:A8:28:BD:B3:C9:8A"},
+        {"algorithm":"sha-224","value":"D5:64:26:14:94:BC:D0:33:EE:F2:FA:75:BA:D9:10:C3:C4:67:39:77:8E:35:71:32:C4:1A:F6:18"},
+        {"algorithm":"sha-256","value":"16:74:53:B5:E9:56:C0:22:97:0C:3D:90:EE:26:F0:65:1C:9B:5E:CE:90:1F:D7:CF:6F:FB:49:66:F3:7C:6C:60"},
+        {"algorithm":"sha-384","value":"ED:81:61:20:90:95:2F:26:C9:71:D8:6E:39:C7:23:35:3D:E5:17:47:20:EB:53:27:8C:4D:04:AC:FB:21:82:94:CE:3C:90:BA:CB:8A:C9:52:A4:7E:73:6B:D2:57:64:19"},
+        {"algorithm":"sha-512","value":"AB:F1:9F:C4:B5:CF:B5:F9:58:45:9C:F4:CF:29:F8:D5:AD:0B:3D:E4:90:B3:61:3F:2F:41:AB:55:22:A6:70:BE:8C:85:C8:56:7D:E5:90:50:98:97:3C:ED:7D:3E:5A:9F:F2:01:47:F8:03:DD:09:E0:90:75:08:7A:53:48:22:44"}
+      ],
+      "role":"client"
+    }
+  }
+}
+
+
+
+
+ToServer:{
+  "request":true,
+  "id":3,
+  "method":"mediasoup-request",
+  "data":{
+    "method":"createProducer",
+    "target":"peer",
+    "id":26779214,
+    "kind":"video",
+    "transportId":69211310,
+    "rtpParameters":{
+      "muxId":null,
+      "codecs":[
+        {"name":"VP8","mimeType":"video/VP8","clockRate":90000,"payloadType":96,"rtcpFeedback":[{"type":"ccm","parameter":"fir"},{"type":"nack"},{"type":"nack","parameter":"pli"},{"type":"goog-remb"}],"parameters":{}},
+        {"name":"rtx","mimeType":"video/rtx","clockRate":90000,"payloadType":97,"parameters":{"apt":96}}
+      ],
+      "headerExtensions":[
+        {"uri":"urn:ietf:params:rtp-hdrext:toffset","id":2},
+        {"uri":"http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time","id":3},
+        {"uri":"urn:3gpp:video-orientation","id":4}
+      ],
+      "encodings":[
+        {"ssrc":3914777821,"rtx":{"ssrc":3888786593},"profile":"low"},
+        {"ssrc":3914777822,"rtx":{"ssrc":3888786594},"profile":"medium"},
+        {"ssrc":3914777823,"rtx":{"ssrc":3888786595},"profile":"high"}
+      ],
+      "rtcp":{
+        "cname":"Zr/9Nq8yfikZj7r/","reducedSize":true,"mux":true
+      }
+    },
+    "paused":false,
+    "appData":{
+      "source":"webcam"
+    }
+  }
+}
+
+ToClient:{
+  "response":true,
+  "id":3,
+  "ok":true,
+  "data":{}
+}
+
+// 第二个用户接入
+
+ToClient:{
+  "request":true,
+  "id":9915145,
+  "method":"mediasoup-notification",
+  "data":{
+    "method":"newPeer",
+    "target":"peer",
+    "notification":true,
+    "consumers":[],
+    "name":"wsa3hcmv",
+    "appData":{
+      "displayName":"Francesco Spong",
+      "device":{
+        "flag":"chrome",
+        "name":"Chrome",
+        "version":"67.0",
+        "bowser":{
+          "name":"Chrome",
+          "chrome":true,
+          "version":"67.0",
+          "blink":true,
+          "windows":true,
+          "osname":"Windows",
+          "osversion":"10",
+          "a":true
+        }
+      }
+    }
+  }
+}
+
+
+ToClient:{
+  "request":true,
+  "id":7638257,
+  "method":"mediasoup-notification",
+  "data":{
+    "method":"newConsumer",
+    "target":"peer",
+    "notification":true,
+    "id":10321706,
+    "kind":"video",
+    "rtpParameters":{
+      "muxId":null,
+      "codecs":[
+        {"name":"VP8","mimeType":"video/VP8","clockRate":90000,"payloadType":101,"rtcpFeedback":[{"type":"ccm","parameter":"fir"},{"type":"nack"},{"type":"nack","parameter":"pli"},{"type":"goog-remb"}],"parameters":{}},
+        {"name":"rtx","mimeType":"video/rtx","clockRate":90000,"payloadType":102,"parameters":{"apt":101}}
+      ],
+      "headerExtensions":[
+        {"uri":"urn:ietf:params:rtp-hdrext:toffset","id":2},{"uri":"http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time","id":3},
+        {"uri":"urn:3gpp:video-orientation","id":4}
+      ],
+      "encodings":[
+        {"ssrc":73875725,"rtx":{"ssrc":91109703}}
+      ],
+      "rtcp":{
+        "cname":"yBm6RiEdxrdTKR6p",
+        "reducedSize":true,"mux":true
+      }
+    },
+    "paused":false,
+    "preferredProfile":"default",
+    "effectiveProfile":null,
+    "appData":{"source":"webcam"},
+    "peerName":"wsa3hcmv"
+  }
+}
+
+
+ToClient:{
+  "request":true,
+  "id":5457735,
+  "method":"mediasoup-notification",
+  "data":{
+    "method":"consumerPreferredProfileSet",
+    "target":"peer",
+    "notification":true,
+    "id":10321706,
+    "peerName":"wsa3hcmv",
+    "profile":"low"
+  }
+}
+
+////////////////////////////////////////////
+
+
+// 第二个
+ToServer:{
+  "request":true,
+  "id":0,
+  "method":"mediasoup-request",
+  "data":{
+    "method":"queryRoom",
+    "target":"room"
+  }
+}
+
+ToClient:{
+  "response":true,
+  "id":0,
+  "ok":true,
+  "data":{
+    "rtpCapabilities":{
+      "codecs":[
+        {"kind":"audio","name":"opus","mimeType":"audio/opus","clockRate":48000,"channels":2,"parameters":{"useinbandfec":1},"rtcpFeedback":[],"preferredPayloadType":100},
+        {"kind":"video","name":"VP8","mimeType":"video/VP8","clockRate":90000,"rtcpFeedback":[{"type":"nack"},{"type":"nack","parameter":"pli"},{"type":"nack","parameter":"sli"},{"type":"nack","parameter":"rpsi"},{"type":"nack","parameter":"app"},{"type":"ccm","parameter":"fir"},{"type":"ack","parameter":"rpsi"},{"type":"ack","parameter":"app"},{"type":"goog-remb"}],"parameters":{},"preferredPayloadType":101},
+        {"kind":"video","name":"rtx","mimeType":"video/rtx","preferredPayloadType":102,"clockRate":90000,"parameters":{"apt":101}}
+      ],
+      "headerExtensions":[
+        {"kind":"audio","uri":"urn:ietf:params:rtp-hdrext:ssrc-audio-level","preferredId":1,"preferredEncrypt":false},
+        {"kind":"video","uri":"urn:ietf:params:rtp-hdrext:toffset","preferredId":2,"preferredEncrypt":false},
+        {"kind":"audio","uri":"http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time","preferredId":3,"preferredEncrypt":false},
+        {"kind":"video","uri":"http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time","preferredId":3,"preferredEncrypt":false},
+        {"kind":"video","uri":"urn:3gpp:video-orientation","preferredId":4,"preferredEncrypt":false},
+        {"kind":"video","uri":"urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id","preferredId":5,"preferredEncrypt":false}
+      ],
+      "fecMechanisms":[]
+    },
+    "mandatoryCodecPayloadTypes":[]
+  }
+}
+
+ToServer:{
+  "request":true,
+  "id":1,
+  "method":"mediasoup-request",
+  "data":{
+    "method":"join",
+    "target":"room",
+    "peerName":"TestPeer",
+    "rtpCapabilities":{
+      "codecs":[
+        {"name":"opus","mimeType":"audio/opus","kind":"audio","clockRate":48000,"preferredPayloadType":100,"channels":2,"rtcpFeedback":[],"parameters":{"useinbandfec":1}},
+        {"name":"VP8","mimeType":"video/VP8","kind":"video","clockRate":90000,"preferredPayloadType":101,"rtcpFeedback":[{"type":"ccm","parameter":"fir"},{"type":"nack"},{"type":"nack","parameter":"pli"},{"type":"goog-remb"}],"parameters":{}},
+        {"name":"rtx","mimeType":"video/rtx","kind":"video","clockRate":90000,"preferredPayloadType":102,"parameters":{"apt":101}}
+      ],
+      "headerExtensions":[
+        {"kind":"audio","uri":"urn:ietf:params:rtp-hdrext:ssrc-audio-level","preferredId":1},
+        {"kind":"video","uri":"urn:ietf:params:rtp-hdrext:toffset","preferredId":2},
+        {"kind":"video","uri":"http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time","preferredId":3},
+        {"kind":"video","uri":"urn:3gpp:video-orientation","preferredId":4}
+      ],
+      "fecMechanisms":[]
+    },
+    "appData":{
+      "displayName":"fuckyou",
+      "device":{
+        "flag":"mediasoup-client-cpp",
+        "name":"mediasoup-client-cpp",
+        "version":"1.0"
+      }
+    }
+  }
+}
+
+ToClient:{
+  "response":true,
+  "id":1,
+  "ok":true,
+  "data":{
+    "peers":[
+      {
+        "consumers":[
+          {
+            "id":42736579,
+            "kind":"video",
+            "rtpParameters":{
+              "muxId":null,
+              "codecs":[
+                {"name":"VP8","mimeType":"video/VP8","clockRate":90000,"payloadType":101,"rtcpFeedback":[{"type":"ccm","parameter":"fir"},{"type":"nack"},{"type":"nack","parameter":"pli"},{"type":"goog-remb"}],"parameters":{}},
+                {"name":"rtx","mimeType":"video/rtx","clockRate":90000,"payloadType":102,"parameters":{"apt":101}}
+              ],
+              "headerExtensions":[
+                {"uri":"urn:ietf:params:rtp-hdrext:toffset","id":2},
+                {"uri":"http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time","id":3},
+                {"uri":"urn:3gpp:video-orientation","id":4}
+              ],
+              "encodings":[
+                {"ssrc":63012045,"rtx":{"ssrc":10922334}}
+              ],
+              "rtcp":{
+                "cname":"8NYWzFsq9BaCniFr","reducedSize":true,"mux":true
+              }
+            },
+            "paused":false,
+            "preferredProfile":"default",
+            "effectiveProfile":null,
+            "appData":{"source":"webcam"},
+            "peerName":"wsa3hcmv"
+          }
+        ],
+        "name":"wsa3hcmv",
+        "appData":{
+          "displayName":"Francesco Spong",
+          "device":{"flag":"chrome","name":"Chrome","version":"67.0","bowser":{"name":"Chrome","chrome":true,"version":"67.0","blink":true,"windows":true,"osname":"Windows","osversion":"10","a":true}}
+        }
+      }
+    ]
+  }
+}
+
+
+ToServer:{
+  "request":true,
+  "id":2,
+  "method":"mediasoup-request",
+  "data":{
+    "method":"createTransport",
+    "target":"peer",
+    "id":60123806,
+    "direction":"recv",
+    "options":{"tcp":false},
+    "appData":{"media":"RECV"}
+  }
+}
+
+
+ToServer:{
+  "request":true,
+  "id":3,
+  "method":"mediasoup-request",
+  "data":{
+    "method":"createTransport",
+    "target":"peer",
+    "id":88067223,
+    "direction":"send",
+    "options":{"tcp":false},
+    "appData":{"media":"SEND_MIC_WEBCAM"},
+    "dtlsParameters":{
+      "role":"server",
+      "fingerprints":[
+        {"algorithm":"sha-256","value":"BB:D0:1C:A7:9A:90:69:83:97:99:A0:27:7F:25:78:E1:00:EB:DC:9F:27:64:21:34:38:49:42:26:3F:79:C8:69"}
+      ]
+    }
+  }
+}
+
+
+ToClient:{
+  "request":true,
+  "id":1969224,
+  "method":"mediasoup-notification",
+  "data":{
+    "method":"consumerPreferredProfileSet",
+    "target":"peer",
+    "notification":true,
+    "id":42736579,
+    "peerName":"wsa3hcmv",
+    "profile":"low"
+  }
+}
+
+
+ToClient:{
+  "response":true,
+  "id":2,
+  "ok":true,
+  "data":{
+    "iceParameters":{
+      "iceLite":true,"password":"qncxogg3lgjhm4ugbk1ihpl4a58mbpzt","usernameFragment":"persvzrik7m4l71b"
+    },
+    "iceCandidates":[
+      {"family":"ipv4","foundation":"udpcandidate","ip":"192.168.1.118","port":42137,"priority":1078862079,"protocol":"udp","type":"host"}
+    ],
+    "dtlsParameters":{
+      "fingerprints":[
+        {"algorithm":"sha-1","value":"E0:DE:BB:7F:27:EE:4F:1A:7B:7E:31:E6:1D:64:DD:F9:79:99:94:36"},
+        {"algorithm":"sha-224","value":"AC:AA:9D:D0:66:46:26:18:3A:0D:06:4B:4F:CE:B8:EE:EC:0E:ED:77:21:28:93:CD:79:0D:51:F4"},
+        {"algorithm":"sha-256","value":"37:A1:53:5D:FB:13:4F:81:53:F0:CC:A3:07:06:B5:85:D6:0F:94:3E:3D:C0:7D:B1:B0:6F:43:BF:0E:8B:A5:AD"},
+        {"algorithm":"sha-384","value":"B7:9B:31:E2:61:B9:D4:DF:24:A4:56:7E:B2:AD:AD:46:00:64:18:47:85:AC:FB:1E:FA:20:E5:8D:AE:2B:44:7E:6A:71:AE:36:5B:89:DA:A7:80:D8:11:0F:10:8E:9E:69"},
+        {"algorithm":"sha-512","value":"EB:D6:C9:5F:B7:46:1A:40:4A:86:92:22:3C:A5:2B:E9:0C:48:3B:DF:A1:F5:95:56:1B:86:53:1A:DC:E7:D4:76:23:B2:8D:3D:E0:A6:CC:27:44:D2:68:D4:C9:B8:79:87:A0:03:F7:91:3D:69:E3:ED:3D:AD:F3:AB:CE:1E:B5:C6"}
+      ],
+      "role":"auto"
+    }
+  }
+}
+
