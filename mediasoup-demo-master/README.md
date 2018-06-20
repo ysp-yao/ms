@@ -48,6 +48,7 @@ $ npm install -g gulp-cli
 ```bash
 $ cd server
 $ node server.js
+$ DEBUG="mediasoup*" node server.js
 ```
 
 * In another terminal build and run the browser application:

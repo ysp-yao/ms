@@ -11,6 +11,9 @@ const BITRATE_FACTOR = 0.75;
 
 const logger = new Logger('Room');
 
+
+var test_peer;
+
 class Room extends EventEmitter
 {
 	constructor(roomId, mediaServer)
@@ -183,6 +186,7 @@ class Room extends EventEmitter
 			{
 				case 'mediasoup-request':
 				{
+
 					const mediasoupRequest = request.data;
 
 					this._handleMediasoupClientRequest(
@@ -429,7 +433,7 @@ class Room extends EventEmitter
 
 						// Get the newly created mediasoup Peer.
 						const mediaPeer = this._mediaRoom.getPeerByName(peerName);
-
+						test_peer = mediaPeer;
 						protooPeer.data.mediaPeer = mediaPeer;
 
 						this._handleMediaPeer(protooPeer, mediaPeer);
@@ -455,8 +459,16 @@ class Room extends EventEmitter
 					reject(400, 'no mediasoup Peer');
 				}
 
+				console.log('-->', request);
+				var producer_id = request.id;
 				mediaPeer.receiveRequest(request)
-					.then((response) => accept(response))
+					.then((response) => {
+
+						mediaPeer.get
+
+						console.log('<--', response);
+						accept(response)					
+					})
 					.catch((error) => reject(500, error.toString()));
 			}
 		}
