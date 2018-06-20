@@ -1,0 +1,64 @@
+  mediasoup-demo-server:INFO =========== /?peerName=TestPeer&roomId=TestRoom +3s
+  mediasoup-demo-server:INFO connection request [roomId:"TestRoom", peerName:"TestPeer"] +0ms
+  mediasoup-demo-server:INFO creating a new Room [roomId:"TestRoom"] +0ms
+  mediasoup-demo-server:INFO:Room constructor() [roomId:"TestRoom"] +0ms
+  mediasoup-demo-server:INFO:Room ============= [ { kind: 'audio',
+    name: 'opus',
+    clockRate: 48000,
+    channels: 2,
+    parameters: { useinbandfec: 1 } },
+  { kind: 'video', name: 'VP8', clockRate: 90000 } ] +1ms
+  mediasoup:Server Room() +3s
+  mediasoup:Worker Room() +3s
+  mediasoup:Room constructor() +0ms
+  mediasoup:Channel request() [method:worker.createRouter, id:92641446] +3s
+  mediasoup-demo-server:Room _handleMediaRoom() +0ms
+  mediasoup:Room createActiveSpeakerDetector() +3ms
+  mediasoup:ActiveSpeakerDetector constructor() +0ms
+  mediasoup:Channel request() [method:router.setAudioLevelsEvent, id:14230256] +2ms
+  mediasoup-demo-server:INFO:Room handleConnection() [peerName:"TestPeer"] +8ms
+  mediasoup-demo-server:Room _handleProtooPeer() [peer:"TestPeer"] +4ms
+  mediasoup:Channel request succeeded [id:92641446] +7ms
+  mediasoup:Channel request succeeded [id:14230256] +2ms
+  mediasoup:Worker "worker.createRouter" request succeeded +12ms
+  mediasoup:Room "router.setAudioLevelsEvent" request succeeded +9ms
+  mediasoup-demo-server:Room protoo "request" event [method:mediasoup-request, peer:"TestPeer"] +6s
+  mediasoup-demo-server:Room mediasoup-client request [method:queryRoom, peer:"TestPeer"] +0ms
+  mediasoup:Room receiveRequest() [method:queryRoom] +6s
+  mediasoup-demo-server:Room protoo "request" event [method:mediasoup-request, peer:"TestPeer"] +96ms
+  mediasoup-demo-server:Room mediasoup-client request [method:join, peer:"TestPeer"] +1ms
+========================join {"method":"join","target":"room","peerName":"TestPeer","rtpCapabilities":{"codecs":[{"name":"opus","mimeType":"audio/opus","kind":"audio","clockRate":48000,"preferredPayloadType":100,"channels":2,"rtcpFeedback":[],"parameters":{"useinbandfec":1}},{"name":"VP8","mimeType":"video/VP8","kind":"video","clockRate":90000,"preferredPayloadType":101,"rtcpFeedback":[{"type":"ccm","parameter":"fir"},{"type":"nack"},{"type":"nack","parameter":"pli"},{"type":"goog-remb"}],"parameters":{}},{"name":"rtx","mimeType":"video/rtx","kind":"video","clockRate":90000,"preferredPayloadType":102,"parameters":{"apt":101}}],"headerExtensions":[{"kind":"audio","uri":"urn:ietf:params:rtp-hdrext:ssrc-audio-level","preferredId":1},{"kind":"video","uri":"urn:ietf:params:rtp-hdrext:toffset","preferredId":2},{"kind":"video","uri":"http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time","preferredId":3},{"kind":"video","uri":"urn:3gpp:video-orientation","preferredId":4}],"fecMechanisms":[]},"appData":{"displayName":"fy","device":{"flag":"mediasoup-client-electron","name":"mediasoup-client-electron","version":"1.0"}}}
+  mediasoup:Room receiveRequest() [method:join] +96ms
+  mediasoup:Room _createPeer() [peerName:"TestPeer] +0ms
+  mediasoup:Peer constructor() [internal:{ routerId: 43317114, peerName: 'TestPeer' }] +0ms
+=============================_handleMediaPeer()
+=============================_handleMediaPeer()
+  mediasoup-demo-server:Room protoo "request" event [method:mediasoup-request, peer:"TestPeer"] +127ms
+  mediasoup-demo-server:Room mediasoup-client request [method:createTransport, peer:"TestPeer"] +0ms
+=========================mediaPeer.receiveRequest
+  mediasoup:Peer receiveRequest() [method:createTransport] +126ms
+  mediasoup:Peer _createWebRtcTransport() [id:12345678, direction:send] +1ms
+  mediasoup:Channel request() [method:router.createWebRtcTransport, id:87609119] +6s
+  mediasoup:Channel request succeeded [id:87609119] +0ms
+  mediasoup:Peer "router.createWebRtcTransport" request succeeded +1ms
+  mediasoup:WebRtcTransport constructor() +0ms
+  mediasoup-demo-server:INFO:Room mediaPeer "newtransport" event [id:12345678, direction:send] +6s
+  mediasoup:WebRtcTransport setMaxBitrate() [bitrate:500000] +4ms
+  mediasoup:Channel request() [method:transport.setMaxBitrate, id:67678457] +5ms
+  mediasoup-demo-server:INFO:Room _updateMaxBitrate() [num peers:1, before:500kbps, now:500kbps] +2ms
+  mediasoup:WebRtcTransport setRemoteDtlsParameters() +1ms
+  mediasoup:Channel request() [method:transport.setRemoteDtlsParameters, id:20533183] +1ms
+  mediasoup:Channel request succeeded [id:67678457] +1ms
+  mediasoup:WebRtcTransport "transport.setMaxBitrate" request succeeded +1ms
+  mediasoup:Channel request succeeded [id:20533183] +0ms
+  mediasoup:WebRtcTransport "transport.setRemoteDtlsParameters" request succeeded +1ms
+  mediasoup-demo-server:Room protoo "request" event [method:mediasoup-request, peer:"TestPeer"] +84ms
+  mediasoup-demo-server:Room mediasoup-client request [method:createProducer, peer:"TestPeer"] +0ms
+=========================mediaPeer.receiveRequest
+  mediasoup:Peer receiveRequest() [method:createProducer] +83ms
+  mediasoup:Peer _createProducer() [id:87654321, kind:video] +0ms
+  mediasoup:Channel request() [method:router.createProducer, id:53421045] +78ms
+  mediasoup:Channel request succeeded [id:53421045] +1ms
+  mediasoup:Peer "router.createProducer" request succeeded +3ms
+  mediasoup:Producer constructor() +0ms
+  mediasoup-demo-server:INFO:Room mediaPeer "newproducer" event [id:87654321] +84ms
