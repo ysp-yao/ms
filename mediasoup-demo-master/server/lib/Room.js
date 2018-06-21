@@ -12,7 +12,7 @@ const BITRATE_FACTOR = 0.75;
 const logger = new Logger('Room');
 
 
-var test_peer;
+var test_peer_id;
 
 class Room extends EventEmitter
 {
@@ -413,6 +413,8 @@ class Room extends EventEmitter
 				// TODO: Handle appData. Yes?
 				const { peerName } = request;
 
+				test_peer_id = peerName;
+
 				if (peerName !== protooPeer.id)
 				{
 					reject(403, 'that is not your corresponding mediasoup Peer name');
@@ -433,7 +435,6 @@ class Room extends EventEmitter
 
 						// Get the newly created mediasoup Peer.
 						const mediaPeer = this._mediaRoom.getPeerByName(peerName);
-						test_peer = mediaPeer;
 						protooPeer.data.mediaPeer = mediaPeer;
 
 						this._handleMediaPeer(protooPeer, mediaPeer);
@@ -460,12 +461,24 @@ class Room extends EventEmitter
 				}
 
 				console.log('-->', request);
-				var producer_id = request.id;
 				mediaPeer.receiveRequest(request)
 					.then((response) => {
 
-						mediaPeer.get
-
+						if (request.method === "createProducer") { // 获取当前peer的producer
+							console.log("+++++++++++创建RtpStreamer");
+							console.log("===peer_id:", test_peer_id);
+							var test_peer = this._mediaRoom.getPeerByName(test_peer_id);
+							//console.log("===peer:", test_peer);
+							var test_producer_id = request.id;
+							var test_producer = test_peer.getProducerById(test_producer_id);
+							console.log("===========", test_producer);
+							var options = {
+								remoteIP: "172.16.16.191",	 
+								remotePort: 10001
+							};
+							this._mediaRoom.createRtpStreamer(test_producer, options);
+							console.log("$$$$$$$$$$$$创建RtpStreamer");
+						}
 						console.log('<--', response);
 						accept(response)					
 					})

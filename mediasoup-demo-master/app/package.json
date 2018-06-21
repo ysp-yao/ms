@@ -6,6 +6,9 @@
   "author": "Iñaki Baz Castillo <ibc@aliax.net>",
   "license": "All Rights Reserved",
   "main": "lib/index.jsx",
+  "scripts":{
+    "start":"gulp live"
+  },
   "dependencies": {
     "babel-runtime": "^6.26.0",
     "classnames": "^2.2.5",
