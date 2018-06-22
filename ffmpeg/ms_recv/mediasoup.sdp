@@ -1,20 +1,20 @@
-SDP:
 v=0
-
-o=- 0 0 IN IP4 127.0.0.1
-
-s=dot
-
-c=IN IP4 127.0.0.1
-
+o=mediasoup 579ba7f3ba8b38632222e85adc6a8b7bed13aae9 0 IN IP4 172.16.16.194
+s=579ba7f3ba8b38632222e85adc6a8b7bed13aae9
+c=IN IP4 172.16.16.194
 t=0 0
-
-m=audio 30000 RTP/AVP 100
-
-a=rtpmap:100 OPUS/48000
-
-m=video 20000 RTP/AVP 110
-
-a=rtpmap:110 VP8/90000
-
-a=fmtp:110 packetization-mode=1
+a=group:LS audio video
+m=video 10000 RTP/AVP 100
+a=rtpmap:100 VP8/90000
+a=rtcp-fb:100 ccm fir
+a=rtcp-fb:100 nack 
+a=rtcp-fb:100 nack pli
+a=rtcp-fb:100 goog-remb 
+a=rtcp-fb:100 transport-cc 
+a=extmap:2 urn:ietf:params:rtp-hdrext:toffset
+a=extmap:3 http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time
+a=extmap:4 urn:3gpp:video-orientation
+a=extmap:5 http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01
+a=extmap:6 http://www.webrtc.org/experiments/rtp-hdrext/playout-delay
+a=mid:video
+a=sendrecv

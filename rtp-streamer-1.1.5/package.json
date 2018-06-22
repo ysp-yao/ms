@@ -1,0 +1,15 @@
+{
+  "name": "rtprecorder",
+  "version": "1.1.5",
+  "description": "rtp recorder",
+  "main": "index.js",
+  "repository": "git@github.com:notedit/rtprecorder.git",
+  "author": "notedit <notedit@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "debug": "^2.6.8",
+    "fluent-ffmpeg": "^2.1.2",
+    "get-port": "^3.1.0",
+    "sdp-transform": "^2.3.0"
+  }
+}

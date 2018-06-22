@@ -466,17 +466,16 @@ class Room extends EventEmitter
 
 						if (request.method === "createProducer") { // 获取当前peer的producer
 							console.log("+++++++++++创建RtpStreamer");
-							console.log("===peer_id:", test_peer_id);
 							var test_peer = this._mediaRoom.getPeerByName(test_peer_id);
-							//console.log("===peer:", test_peer);
 							var test_producer_id = request.id;
 							var test_producer = test_peer.getProducerById(test_producer_id);
-							console.log("===========", test_producer);
 							var options = {
 								remoteIP: "172.16.16.191",	 
-								remotePort: 10001
+								remotePort: 10000
 							};
-							this._mediaRoom.createRtpStreamer(test_producer, options);
+							this._mediaRoom.createRtpStreamer(test_producer, options).then((streamer) => {
+								console.log('started mirroring RTP for', test_producer.kind);
+							  });
 							console.log("$$$$$$$$$$$$创建RtpStreamer");
 						}
 						console.log('<--', response);
