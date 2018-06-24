@@ -1,3 +1,7 @@
 node_modules
 vs15
+vs17
 ffmpeg/bin/*
+.vs
+bin
+obj

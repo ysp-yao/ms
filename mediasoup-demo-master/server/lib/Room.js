@@ -470,10 +470,12 @@ class Room extends EventEmitter
 							var test_producer_id = request.id;
 							var test_producer = test_peer.getProducerById(test_producer_id);
 							var options = {
-								remoteIP: "172.16.16.191",	 
-								remotePort: 10000
+								remoteIP: "127.0.0.1",
+								remoteIP: (test_producer.kind === 'audio') ? 10000 : 10002,	 
+								remotePort: 10002
 							};
 							this._mediaRoom.createRtpStreamer(test_producer, options).then((streamer) => {
+								console.log("------------------",streamer.consumer.rtpParameters);
 								console.log('started mirroring RTP for', test_producer.kind);
 							  });
 							console.log("$$$$$$$$$$$$创建RtpStreamer");
