@@ -56,6 +56,7 @@ $ DEBUG="mediasoup*" node server.js
 ```bash
 $ cd app
 $ gulp live
+$ npm run start
 ```
 
 * Enjoy.
