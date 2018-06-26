@@ -470,7 +470,8 @@ class Room extends EventEmitter
 							var test_producer_id = request.id;
 							var test_producer = test_peer.getProducerById(test_producer_id);
 							var options = {
-								remoteIP: "127.0.0.1",
+								//remoteIP: "127.0.0.1",
+								remoteIP: "176.16.16.191",								
 								remotePort: (test_producer.kind === 'audio') ? 10000 : 10002
 							};
 							//console.log("===============");						
