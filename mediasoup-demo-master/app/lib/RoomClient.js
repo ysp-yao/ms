@@ -644,15 +644,15 @@ export default class RoomClient
 		this._room.join(this._peerName, { displayName, device })
 			.then(() =>
 			{
-				// Create Transport for sending.
-				this._sendTransport =
-					this._room.createTransport('send', { media: 'SEND_MIC_WEBCAM' });
+				// // Create Transport for sending.
+				// this._sendTransport =
+				// 	this._room.createTransport('send', { media: 'SEND_MIC_WEBCAM' });
 
-				this._sendTransport.on('close', (originator) =>
-				{
-					logger.debug(
-						'Transport "close" event [originator:%s]', originator);
-				});
+				// this._sendTransport.on('close', (originator) =>
+				// {
+				// 	logger.debug(
+				// 		'Transport "close" event [originator:%s]', originator);
+				// });
 
 				// Create Transport for receiving.
 				this._recvTransport =
@@ -663,6 +663,15 @@ export default class RoomClient
 					logger.debug(
 						'receiving Transport "close" event [originator:%s]', originator);
 				});
+
+				const peers = this._room.peers;
+
+				for (const peer of peers)
+				{
+					this._handlePeer(peer, { notify: false });
+				}
+
+				return;
 			})
 			.then(() =>
 			{
